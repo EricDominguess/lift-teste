@@ -3,3 +3,31 @@ h1 {
     margin-top: 100px;
     font-family: Arial, Helvetica, sans-serif;
 }
+
+table {
+    border-collapse: collapse;
+    margin-left: 350px;
+    margin-top: 50px;
+    width: 50%;
+    border: 1px solid black;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+th {
+    height: 50px;
+    text-align: center;
+    width: 70px;
+}
+
+tr:hover{
+    background-color: #bdb8b8;
+}
+
+tbody{
+    text-align: center;
+    font-size: 20px;
+}
+
+tbody tr {
+    height: 50px; /* Define a altura das linhas */
+}
