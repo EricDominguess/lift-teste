@@ -42,19 +42,19 @@ function calcularTotalPedido(pedido, itensPedido, produtos) {
         return "0.00"; // Retorna "0.00" se nenhum item for encontrado
     }
 
-    // Calcula o total somando os preços dos produtos multiplicados pelas quantidades
+    // Verifica se o pedido tem itens associados
     const total = itensDoPedido.reduce((soma, item) => {
-        // Encontra o produto correspondente ao item
+        
         const produto = produtos.find(p => p.id === item.produto);
         if (!produto) {
             console.warn(`Produto não encontrado para o produto ID: ${item.produto}`);
-            return soma; // Ignora itens sem produto correspondente
+            return soma; 
         }
 
         return soma + produto.valor * item.quantidade;
     }, 0);
 
-    return total.toFixed(2); // Retorna o total com 2 casas decimais
+    return total.toFixed(2); 
 }
 
 async function preencherTablePedido() {
@@ -97,6 +97,12 @@ async function linhaTablePedidos(pedido, cliente, total) {
         <td>${pedido.data}</td>
         <td>${total}</td>
     `;
+
+    // Adiciona um evento de clique para redirecionar para a página de detalhes
+    linha.addEventListener("click", () => {
+        window.location.href = `DetalhesPedido.html?pedidoId=${pedido.id}`;
+    });
+
     return linha;
 }
 
