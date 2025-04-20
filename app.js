@@ -32,38 +32,72 @@ async function produtosApi() {
     }
 }
 
-async function preencherTabela() {
-    const pedidos = await pedidosApi();
-    const clientes = await clientesApi();
+function calcularTotalPedido(pedido, itensPedido, produtos) {
 
-    const tabela = document.getElementById("tabelaPedidos").querySelector("tbody");
-    tabela.innerHTML = "";
+    // Filtra os itens do pedido atual usando o pedido.id
+    const itensDoPedido = itensPedido.filter(item => item.pedido === pedido.id);
 
-    
-    pedidos.forEach(pedido => {
-        const linha = document.createElement("tr");
+    if (itensDoPedido.length === 0) {
+        console.warn(`Nenhum item encontrado para o pedido ID: ${pedido.id}`);
+        return "0.00"; // Retorna "0.00" se nenhum item for encontrado
+    }
 
-        const colunaPedido = document.createElement("td");
-        colunaPedido.textContent = pedido.id;
-        linha.appendChild(colunaPedido);
+    // Calcula o total somando os preços dos produtos multiplicados pelas quantidades
+    const total = itensDoPedido.reduce((soma, item) => {
+        // Encontra o produto correspondente ao item
+        const produto = produtos.find(p => p.id === item.produto);
+        if (!produto) {
+            console.warn(`Produto não encontrado para o produto ID: ${item.produto}`);
+            return soma; // Ignora itens sem produto correspondente
+        }
 
-        const cliente = clientes.find(clientes => clientes.id === pedido.cliente)
-        const colunaCliente = document.createElement("td");
-        colunaCliente.textContent = cliente ? cliente.nome : "Desconhecido";
-        linha.appendChild(colunaCliente);
+        return soma + produto.valor * item.quantidade;
+    }, 0);
 
-        const colunaData = document.createElement("td");
-        colunaData.textContent = pedido.data;
-        linha.appendChild(colunaData);
-
-        const colunaValor = document.createElement("td");
-        colunaValor.textContent = pedido.valor;
-        linha.appendChild(colunaValor);
-
-        tabela.appendChild(linha);
-        
-    });
+    return total.toFixed(2); // Retorna o total com 2 casas decimais
 }
 
-preencherTabela();
-itemPedidoApi();
+async function preencherTablePedido() {
+    const pedidos = await pedidosApi();
+    const clientes = await clientesApi();
+    const itemPedido = await itemPedidoApi();
+    const produtos = await produtosApi();
+
+    console.log("Pedidos:", pedidos);
+    console.log("Clientes:", clientes);
+    console.log("Itens do Pedido:", itemPedido);
+    console.log("Produtos:", produtos);
+
+    const tabela = document.getElementById("tabelaPedidos");
+
+    for (const pedido of pedidos) {
+        if (!pedido.id) {
+            console.warn("Pedido sem ID encontrado:", pedido);
+            continue; // Pule pedidos sem ID
+        }
+
+        // Encontra o cliente associado ao pedido
+        const cliente = clientes.find(c => c.id === pedido.cliente);
+
+        // Calcula o total do pedido
+        const total = calcularTotalPedido(pedido, itemPedido, produtos);
+
+        // Cria a linha da tabela
+        const linha = await linhaTablePedidos(pedido, cliente || { nome: "Desconhecido" }, total);
+        tabela.appendChild(linha);
+    }
+}
+
+async function linhaTablePedidos(pedido, cliente, total) {
+    const linha = document.createElement("tr");
+
+    linha.innerHTML = `
+        <td>${pedido.id}</td>
+        <td>${cliente.nome}</td>
+        <td>${pedido.data}</td>
+        <td>${total}</td>
+    `;
+    return linha;
+}
+
+preencherTablePedido();
