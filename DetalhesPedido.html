@@ -9,25 +9,19 @@
         <div>
             <h1>Informações do Pedido</h1>
         </div>
-        <div>
-            <table id="dadosCliente">
-                <thead>
-                    <tr style="background-color: #746f6f;">
-                        <th>Nome</th>
-                        <th>Cpf</th>
-                        <th>Data_Pedido</th>
-                        <th>Email</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Informações do cliente serão preenchidas aqui -->
-                </tbody>
-            </table>
+        <div id="dadosCliente" class="box-cliente">
+            <div class="container">
+                <h2>Dados do Cliente</h2>
+            </div>
+            <p><strong>Nome:</strong> <span id="nomeCliente"></span></p>
+            <p><strong>Cpf:</strong> <span id="cpfCliente"></span></p>
+            <p><strong>Data:</strong> <span id="Data_Pedido"></span></p>
+            <p><strong>Email: </strong><span id="emailCliente"></span></p>
         </div>
         <div>
             <table id="itensDoPedido">
                 <thead>
-                    <tr style="background-color: #746f6f;">
+                    <tr style="background-color: cyan;">
                         <th>Código</th>
                         <th>Produto</th>
                         <th>Quantidade</th>
@@ -35,9 +29,12 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Itens do pedido serão preenchidos aqui -->
+                    <!-- Itens do pedido aqui -->
                 </tbody>
             </table>
+        </div>
+        <div id="totalPedido">
+            <!-- Valor total aqui-->
         </div>
 
         <script src="detalhes.js"></script>

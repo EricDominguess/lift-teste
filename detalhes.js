@@ -32,16 +32,39 @@ async function produtosApi() {
     }
 }
 
-// Captura o parâmetro 'pedidoId' da URL
+function calcularTotalPedido(pedido, itensPedido, produtos) {
+
+    // Filtra os itens do pedido atual usando o pedido.id
+    const itensDoPedido = itensPedido.filter(item => item.pedido === pedido.id);
+
+    if (itensDoPedido.length === 0) {
+        console.warn(`Nenhum item encontrado para o pedido ID: ${pedido.id}`);
+        return "0.00"; // Retorna "0.00" se nenhum item for encontrado
+    }
+
+    // Verifica se o pedido tem itens associados
+    const total = itensDoPedido.reduce((soma, item) => {
+        
+        const produto = produtos.find(p => p.id === item.produto);
+        if (!produto) {
+            console.warn(`Produto não encontrado para o produto ID: ${item.produto}`);
+            return soma; 
+        }
+
+        return soma + produto.valor * item.quantidade;
+    }, 0);
+
+    return total.toFixed(2); 
+}
+
 const urlParams = new URLSearchParams(window.location.search);
 const pedidoId = urlParams.get('pedidoId');
 
-// Função para buscar e exibir as informações do cliente e os itens do pedido
 async function preencherDetalhesPedido() {
-    const pedidos = await pedidosApi(); // Reutilize a função existente
-    const clientes = await clientesApi(); // Reutilize a função existente
-    const itensPedido = await itemPedidoApi(); // Reutilize a função existente
-    const produtos = await produtosApi(); // Reutilize a função existente
+    const pedidos = await pedidosApi(); 
+    const clientes = await clientesApi(); 
+    const itensPedido = await itemPedidoApi(); 
+    const produtos = await produtosApi(); 
 
     // Encontra o pedido atual
     const pedido = pedidos.find(p => p.id === parseInt(pedidoId));
@@ -53,24 +76,19 @@ async function preencherDetalhesPedido() {
     // Encontra o cliente associado ao pedido
     const cliente = clientes.find(c => c.id === pedido.cliente);
     if (cliente) {
-        const clienteTabela = document.getElementById("dadosCliente").querySelector("tbody");
-        clienteTabela.innerHTML = `
-            <tr>
-                <td>${cliente.nome}</td>
-                <td>${cliente.cpf || "Não informado"}</td>
-                <td>${pedido.data}</td>
-                <td>${cliente.email || "Não informado"}</td>
-            </tr>
-        `;
+        document.getElementById("nomeCliente").textContent = cliente.nome || "Não Informado";
+        document.getElementById("cpfCliente").textContent = cliente.cpf || "Não Informado";
+        document.getElementById("Data_Pedido").textContent = pedido.data || "Não Informado";
+        document.getElementById("emailCliente").textContent = cliente.email || "Não Informado";
     } else {
-        console.warn("Cliente não encontrado para o pedido!");
+        console.warn("Cliente não encontrado!");
     }
 
     // Filtra os itens do pedido atual
     const itensDoPedido = itensPedido.filter(item => item.pedido === parseInt(pedidoId));
 
     const tabelaItens = document.getElementById("itensDoPedido").querySelector("tbody");
-    tabelaItens.innerHTML = ""; // Limpa a tabela antes de preenchê-la
+    tabelaItens.innerHTML = "";
 
     itensDoPedido.forEach(item => {
         const produto = produtos.find(p => p.id === item.produto);
@@ -86,6 +104,9 @@ async function preencherDetalhesPedido() {
             tabelaItens.appendChild(linha);
         }
     });
+
+    const total = calcularTotalPedido(pedido, itensPedido, produtos);
+    document.getElementById("totalPedido").innerHTML = `<strong>Total: </strong> R$ ${total}`;
 }
 
 preencherDetalhesPedido();

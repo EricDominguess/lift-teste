@@ -98,7 +98,7 @@ async function linhaTablePedidos(pedido, cliente, total) {
         <td>${total}</td>
     `;
 
-    // Adiciona um evento de clique para redirecionar para a página de detalhes
+    // Adiciona um evento para redirecionar para a página de detalhes
     linha.addEventListener("click", () => {
         window.location.href = `DetalhesPedido.html?pedidoId=${pedido.id}`;
     });

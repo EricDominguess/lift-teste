@@ -20,7 +20,7 @@ th {
 }
 
 tr:hover{
-    background-color: #bdb8b8;
+    background-color: cyan;
 }
 
 tbody{
@@ -35,24 +35,40 @@ td {
 }
 
 .box-cliente {
-    border: 1px solid #746f6f;
-    border-radius: 8px;
-    padding: 20px;
+    border: 1px solid black;
+    padding: 0px;
     margin: 20px 0;
     background-color: #f9f9f9;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    font-family: Arial, sans-serif;
+    font-family: Arial, Helvetica, sans-serif;
     color: #333;
-    width: 700px;
+    width: 50%;
     margin-left: 350px;
 }
 
 .box-cliente h2 {
-    margin-top: 0;
-    color: #746f6f;
+    margin-top: 10;
+    color: black;
+    background-color: cyan;
+    margin-left: 10px;
 }
 
 .box-cliente p {
     margin: 8px 0;
     font-size: 16px;
+    margin-left: 10px;
+}
+
+.container {
+    display: flex;
+    align-items: center;
+    height: 50px;
+    width: 100%;
+    background-color: cyan;
+}
+
+#totalPedido{
+    font-family: Arial, Helvetica, sans-serif;
+    margin-left: 62%;
+    padding: 10px;
+    font-size: large;
 }
